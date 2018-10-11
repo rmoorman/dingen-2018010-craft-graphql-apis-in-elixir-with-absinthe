@@ -1,5 +1,4 @@
 defmodule PlateSlateWeb.GraphQL.Schema do
-
   use Absinthe.Schema
 
   alias PlateSlate.Repo
@@ -14,10 +13,18 @@ defmodule PlateSlateWeb.GraphQL.Schema do
     end
   end
 
+  @desc "A tasty dish for you to enjoy"
   object :menu_item do
+    @desc "The identifier for this menu item"
     field :id, :id
-    field :name, :string
-    field :description, :string
-  end
 
+    @desc "The name of the menu item"
+    field :name, :string
+
+    @desc "A small amount of text trying to describe this tasteful experience"
+    field :description, :string
+
+    @desc "Since when it has been on the menu"
+    field :added_on, :string
+  end
 end
