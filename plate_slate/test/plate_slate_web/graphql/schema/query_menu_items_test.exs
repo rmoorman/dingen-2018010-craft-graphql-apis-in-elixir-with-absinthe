@@ -2,11 +2,14 @@ defmodule PlateSlateWeb.GraphQL.Schema.QueryMenuItemsTest do
 
   use PlateSlateWeb.ConnCase, async: true
 
+
   @api "/api/graphql"
+
 
   setup do
     PlateSlate.TestSeeds.run()
   end
+
 
   @query """
   {
@@ -22,26 +25,58 @@ defmodule PlateSlateWeb.GraphQL.Schema.QueryMenuItemsTest do
     assert json_response(conn, 200) == %{
       "data" => %{
         "menuItems" => [
-          %{"name" => "Reuben"},
-          %{"name" => "Croque Monsieur"},
-          %{"name" => "Muffuletta"},
           %{"name" => "Bánh mì"},
-          %{"name" => "Vada Pav"},
+          %{"name" => "Chocolate Milkshake"},
+          %{"name" => "Croque Monsieur"},
           %{"name" => "French Fries"},
-          %{"name" => "Papadum"},
-          %{"name" => "Pasta Salad"},
-          %{"name" => "Water"},
-          %{"name" => "Soft Drink"},
           %{"name" => "Lemonade"},
           %{"name" => "Masala Chai"},
+          %{"name" => "Muffuletta"},
+          %{"name" => "Papadum"},
+          %{"name" => "Pasta Salad"},
+          %{"name" => "Reuben"},
+          %{"name" => "Soft Drink"},
+          %{"name" => "Vada Pav"},
           %{"name" => "Vanilla Milkshake"},
-          %{"name" => "Chocolate Milkshake"},
+          %{"name" => "Water"},
         ]
       }
     }
   end
 
-  @query  """
+
+  @query """
+  {
+    menuItems(order: DESC) {
+      name
+    }
+  }
+  """
+  test "menuItems field returns items descending using literals" do
+    response = get(build_conn(), @api, query: @query)
+    assert %{
+      "data" => %{"menuItems" => [%{"name" => "Water"} | _]}
+    } = json_response(response, 200)
+  end
+
+
+  @query """
+  query ($order: SortOrder!) {
+    menuItems(order: $order) {
+      name
+    }
+  }
+  """
+  @variables %{"order" => "DESC"}
+  test "menuItems field returns items descending using variables" do
+    response = get(build_conn(), @api, query: @query, variables: @variables)
+    assert %{
+      "data" => %{"menuItems" => [%{"name" => "Water"} | _]}
+    } = json_response(response, 200)
+  end
+
+
+  @query """
   query ($term: String) {
     menuItems(matching: $term) {
       name
@@ -59,6 +94,7 @@ defmodule PlateSlateWeb.GraphQL.Schema.QueryMenuItemsTest do
       }
     }
   end
+
 
   @query """
   {
