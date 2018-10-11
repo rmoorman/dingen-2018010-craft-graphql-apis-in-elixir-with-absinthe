@@ -7,6 +7,7 @@ defmodule PlateSlateWeb.GraphQL.Schema do
     @desc "The list of available items on the menu"
     field :menu_items, list_of(:menu_item) do
       arg :matching, :string
+      arg :order, :sort_order
       resolve &Resolvers.Menu.menu_items/3
     end
   end
@@ -24,5 +25,10 @@ defmodule PlateSlateWeb.GraphQL.Schema do
 
     @desc "Since when it has been on the menu"
     field :added_on, :string
+  end
+
+  enum :sort_order do
+    value :asc
+    value :desc
   end
 end
