@@ -114,6 +114,9 @@ defmodule PlateSlate.Menu do
     |> where([m], ilike(m.name, ^"%#{name}%"))
     |> Repo.all()
 
+  def list_items(_), do:
+    list_items()
+
   def list_items(), do:
     Repo.all(Item)
 
