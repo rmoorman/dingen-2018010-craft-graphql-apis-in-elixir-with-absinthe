@@ -14,13 +14,16 @@ defmodule PlateSlateWeb.Router do
   end
 
   scope "/", PlateSlateWeb do
-    pipe_through :browser # Use the default browser stack
+    pipe_through :browser
 
     get "/", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", PlateSlateWeb do
-  #   pipe_through :api
-  # end
+  scope "/api" do
+    pipe_through :api
+    forward "/graphql", PlateSlateWeb.GraphQL.Plug
+    forward "/graphiql", PlateSlateWeb.GraphQL.GraphiQL.Simple
+    forward "/graphiql-advanced", PlateSlateWeb.GraphQL.GraphiQL.Advanced
+    forward "/graphiql-playground", PlateSlateWeb.GraphQL.GraphiQL.Playground
+  end
 end
