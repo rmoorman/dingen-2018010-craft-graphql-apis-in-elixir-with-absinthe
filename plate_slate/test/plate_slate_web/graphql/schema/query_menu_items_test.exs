@@ -78,7 +78,7 @@ defmodule PlateSlateWeb.GraphQL.Schema.QueryMenuItemsTest do
 
   @query """
   query ($term: String) {
-    menuItems(matching: $term) {
+    menuItems(filter: {name: $term}) {
       name
     }
   }
@@ -97,15 +97,17 @@ defmodule PlateSlateWeb.GraphQL.Schema.QueryMenuItemsTest do
 
 
   @query """
-  {
-    menuItems(matching: 123) {
+  query ($filter: MenuItemFilter!) {
+    menuItems(filter: $filter) {
       name
     }
   }
   """
-  test "menuItems field returns errors when using a bad value" do
-    response = get(build_conn(), @api, query: @query)
-    assert %{"errors" => [%{"message" => message}]} = json_response(response, 400)
-    assert message == "Argument \"matching\" has invalid value 123."
+  @variables %{filter: %{"tag" => "Vegetarian", "category" => "Sandwiches"}}
+  test "menuItems field returns menuItems, filtering with a variable" do
+    response = get(build_conn(), @api, query: @query, variables: @variables)
+    assert %{
+      "data" => %{"menuItems" => [%{"name" => "Vada Pav"}]}
+    } == json_response(response, 200)
   end
 end
