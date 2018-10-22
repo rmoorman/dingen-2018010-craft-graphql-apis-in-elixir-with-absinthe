@@ -13,7 +13,7 @@ defmodule PlateSlateWeb.GraphQL.Schema.QueryMenuItemsTest do
 
   @query """
   {
-    menuItems {
+    menuItems(filter: {}) {
       name
     }
   }
@@ -47,7 +47,7 @@ defmodule PlateSlateWeb.GraphQL.Schema.QueryMenuItemsTest do
 
   @query """
   {
-    menuItems(order: DESC) {
+    menuItems(filter: {}, order: DESC) {
       name
     }
   }
@@ -62,7 +62,7 @@ defmodule PlateSlateWeb.GraphQL.Schema.QueryMenuItemsTest do
 
   @query """
   query ($order: SortOrder!) {
-    menuItems(order: $order) {
+    menuItems(filter: {}, order: $order) {
       name
     }
   }
