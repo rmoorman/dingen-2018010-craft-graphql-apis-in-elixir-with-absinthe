@@ -24,7 +24,7 @@ defmodule PlateSlateWeb.GraphQL.Schema do
     field :description, :string
 
     @desc "Since when it has been on the menu"
-    field :added_on, :string
+    field :added_on, :date
   end
 
   enum :sort_order do
@@ -48,5 +48,28 @@ defmodule PlateSlateWeb.GraphQL.Schema do
 
     @desc "Priced below a value"
     field :priced_below, :float
+
+    @desc "Added to the menu before this date"
+    field :added_before, :date
+
+    @desc "Added to the menu after this date"
+    field :added_after, :date
+  end
+
+  scalar :date do
+    parse fn input ->
+      with(
+        %Absinthe.Blueprint.Input.String{value: value} <- input,
+        {:ok, date} <- Date.from_iso8601(value)
+      ) do
+        {:ok, date}
+      else
+        _ -> :error
+      end
+    end
+
+    serialize fn date ->
+      Date.to_iso8601(date)
+    end
   end
 end
