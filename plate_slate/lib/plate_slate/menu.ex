@@ -21,6 +21,17 @@ defmodule PlateSlate.Menu do
   def list_categories(), do:
     Repo.all(Category)
 
+  def list_categories(filters) do
+    filters
+    |> Enum.reduce(Category, fn
+      {:order, order}, query ->
+        query |> order_by({^order, :name})
+      {:name, name}, query ->
+        from c in query, where: ilike(c.name, ^"%#{name}%")
+    end)
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single category.
 

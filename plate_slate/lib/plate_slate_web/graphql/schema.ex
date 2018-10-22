@@ -10,6 +10,20 @@ defmodule PlateSlateWeb.GraphQL.Schema do
       arg :order, type: :sort_order, default_value: :asc
       resolve &Resolvers.Menu.menu_items/3
     end
+
+    @desc "The list of available categories"
+    field :category_list, list_of(:category) do
+      @desc "The name of the category"
+      arg :name, :string
+      arg :order, type: :sort_order, default_value: :asc
+      resolve &Resolvers.Menu.category_list/3
+    end
+
+    @desc "Email filtering"
+    field :accept_only_valid_email_list, list_of(:email) do
+      arg :email_list, non_null(list_of(:email))
+      resolve fn _, args, _ -> {:ok, args.email_list} end
+    end
   end
 
   @desc "A tasty dish for you to enjoy"
@@ -25,6 +39,15 @@ defmodule PlateSlateWeb.GraphQL.Schema do
 
     @desc "Since when it has been on the menu"
     field :added_on, :date
+  end
+
+  @desc "Category for dishes"
+  object :category do
+    @desc "The identifier for this category"
+    field :id, :id
+
+    @desc "The name of the category"
+    field :name, :string
   end
 
   enum :sort_order do
@@ -70,6 +93,23 @@ defmodule PlateSlateWeb.GraphQL.Schema do
 
     serialize fn date ->
       Date.to_iso8601(date)
+    end
+  end
+
+  scalar :email do
+    parse fn input ->
+      with(
+        %Absinthe.Blueprint.Input.String{value: value} <- input,
+        [username, domain] <- String.split(value, "@")
+      ) do
+        {:ok, {username, domain}}
+      else
+        _ -> :error
+      end
+    end
+
+    serialize fn {username, domain} ->
+      "#{username}@#{domain}"
     end
   end
 end

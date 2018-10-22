@@ -158,4 +158,57 @@ defmodule PlateSlateWeb.GraphQL.Schema.QueryMenuItemsTest do
     """
     assert expected == message
   end
+
+
+  @query """
+  query ($filter: String!, $order: SortOrder!) {
+    categoryList(name: $filter, order: $order) {
+      name
+    }
+  }
+  """
+  @variables %{filter: "i", order: "DESC"}
+  test "categoryList filtered by name and ordered descending" do
+    response = get(build_conn(), @api, query: @query, variables: @variables)
+
+    assert %{"data" => %{
+      "categoryList" => [
+        %{"name" => "Sides"},
+        %{"name" => "Sandwiches"},
+      ]
+    }} == json_response(response, 200)
+  end
+
+  @query """
+  query ($emailList: [Email]) {
+    acceptOnlyValidEmailList(emailList: $emailList)
+  }
+  """
+  test "acceptOnlyValidEmailList field return the list of given email adresses when they seem correct" do
+    variables = %{emailList: ["something"]}
+    response = get(build_conn(), @api, query: @query, variables: variables)
+
+    assert %{
+      "errors" => [
+        %{"locations" => [%{"column" => 0, "line" => 2}], "message" => message}
+      ]
+    } = json_response(response, 400)
+
+    assert ^message = """
+    Argument "emailList" has invalid value $emailList.
+    In element #1: Expected type "Email", found "something".\
+    """
+
+    variables = %{emailList: ["foo@example.com", "bar@example.com"]}
+    response = get(build_conn(), @api, query: @query, variables: variables)
+
+    assert %{
+      "data" => %{
+        "acceptOnlyValidEmailList" => [
+          "foo@example.com",
+          "bar@example.com",
+        ]
+      }
+    } == json_response(response, 200)
+  end
 end
