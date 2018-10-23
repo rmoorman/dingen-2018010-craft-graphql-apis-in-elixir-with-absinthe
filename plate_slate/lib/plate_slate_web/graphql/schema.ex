@@ -1,25 +1,10 @@
 defmodule PlateSlateWeb.GraphQL.Schema do
   use Absinthe.Schema
 
-  alias PlateSlateWeb.GraphQL.Resolvers
-
   import_types __MODULE__.MenuTypes
 
   query do
-    @desc "The list of available items on the menu"
-    field :menu_items, list_of(:menu_item) do
-      arg :filter, non_null(:menu_item_filter)
-      arg :order, type: :sort_order, default_value: :asc
-      resolve &Resolvers.Menu.menu_items/3
-    end
-
-    @desc "The list of available categories"
-    field :category_list, list_of(:category) do
-      @desc "The name of the category"
-      arg :name, :string
-      arg :order, type: :sort_order, default_value: :asc
-      resolve &Resolvers.Menu.category_list/3
-    end
+    import_fields :menu_queries
 
     @desc "Email filtering"
     field :accept_only_valid_email_list, list_of(:email) do
