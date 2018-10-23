@@ -46,11 +46,22 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
   object :category do
     @desc "The identifier for this category"
     field :id, :id
-
     @desc "The name of the category"
     field :name, :string
+    field :description, :string
+    field :items, list_of(:menu_item) do
+      resolve &Resolvers.Menu.items_for_category/3
+    end
   end
 
+  union :search_result do
+    types [:menu_item, :category]
+    resolve_type fn
+      %PlateSlate.Menu.Item{}, _ -> :menu_item
+      %PlateSlate.Menu.Category{}, _ -> :category
+      _, _ -> nil
+    end
+  end
 
   object :menu_queries do
     @desc "The list of available items on the menu"

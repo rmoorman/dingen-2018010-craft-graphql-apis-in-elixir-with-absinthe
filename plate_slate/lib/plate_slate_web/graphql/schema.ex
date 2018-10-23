@@ -3,6 +3,8 @@ defmodule PlateSlateWeb.GraphQL.Schema do
 
   import_types __MODULE__.MenuTypes
 
+  alias PlateSlateWeb.GraphQL.Resolvers
+
   query do
     import_fields :menu_queries
 
@@ -11,8 +13,12 @@ defmodule PlateSlateWeb.GraphQL.Schema do
       arg :email_list, non_null(list_of(:email))
       resolve fn _, args, _ -> {:ok, args.email_list} end
     end
-  end
 
+    field :search, list_of(:search_result) do
+      arg :matching, non_null(:string)
+      resolve &Resolvers.Menu.search/3
+    end
+  end
 
   enum :sort_order do
     value :asc
