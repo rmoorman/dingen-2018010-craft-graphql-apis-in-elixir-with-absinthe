@@ -15,4 +15,8 @@ defmodule PlateSlateWeb.GraphQL.Schema do
     end
   end
 
+  mutation do
+    import_fields :menu_mutations
+  end
+
 end
