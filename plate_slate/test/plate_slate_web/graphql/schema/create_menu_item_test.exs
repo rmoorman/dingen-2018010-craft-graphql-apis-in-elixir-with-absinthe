@@ -29,6 +29,7 @@ defmodule PlateSlateWeb.GraphQL.Schema.CreateMenuItemTest do
     }
   }
   """
+
   test "createMenuItem field creates an item", %{category_id: category_id} do
     menu_item = %{
       "name" => "French Dip",
@@ -46,6 +47,27 @@ defmodule PlateSlateWeb.GraphQL.Schema.CreateMenuItemTest do
           "price" => menu_item["price"],
         }
       }
+    }
+  end
+
+  test "creating a menu item with an existing name fails", %{category_id: category_id} do
+    menu_item = %{
+      "name" => "Reuben",
+      "description" => "Roast beef, caramelized onions, horseradish, ...",
+      "price" => "5.75",
+      "categoryId" => category_id,
+    }
+    conn = post(build_conn(), @api, query: @query, variables: %{"menuItem" => menu_item})
+
+    assert json_response(conn, 200) == %{
+      "data" => %{"menuItem" => nil},
+      "errors" => [
+        %{
+          "locations" => [%{"column" => 0, "line" => 2}],
+          "message" => "Could not create menu item",
+          "path" => ["menuItem"],
+        },
+      ],
     }
   end
 
