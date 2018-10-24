@@ -11,9 +11,8 @@ defmodule PlateSlateWeb.GraphQL.Schema.QuerySearchTest do
   @query """
   query Search($term: String!) {
     search(matching: $term) {
-      ... on MenuItem { name }
-      ... on Category { name }
       __typename
+      name
     }
   }
   """
@@ -24,6 +23,7 @@ defmodule PlateSlateWeb.GraphQL.Schema.QuerySearchTest do
     assert length(results) > 0
     assert Enum.find(results, &(&1["__typename"] == "Category"))
     assert Enum.find(results, &(&1["__typename"] == "MenuItem"))
+    assert Enum.find(results, &(&1["name"]))
   end
 
 end

@@ -1,7 +1,9 @@
 defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
+
   use Absinthe.Schema.Notation
 
   alias PlateSlateWeb.GraphQL.Resolvers
+
 
   @desc "Filtering options for the menu item list"
   input_object :menu_item_filter do
@@ -27,8 +29,11 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
     field :added_after, :date
   end
 
+
   @desc "A tasty dish for you to enjoy"
   object :menu_item do
+    interfaces [:search_result]
+
     @desc "The identifier for this menu item"
     field :id, :id
 
@@ -42,8 +47,10 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
     field :added_on, :date
   end
 
+
   @desc "Category for dishes"
   object :category do
+    interfaces [:search_result]
     @desc "The identifier for this category"
     field :id, :id
     @desc "The name of the category"
@@ -54,14 +61,16 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
     end
   end
 
-  union :search_result do
-    types [:menu_item, :category]
+
+  interface :search_result do
+    field :name, :string
     resolve_type fn
       %PlateSlate.Menu.Item{}, _ -> :menu_item
       %PlateSlate.Menu.Category{}, _ -> :category
       _, _ -> nil
     end
   end
+
 
   object :menu_queries do
     @desc "The list of available items on the menu"
