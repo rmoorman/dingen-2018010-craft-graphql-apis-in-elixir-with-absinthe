@@ -4,6 +4,7 @@ defmodule PlateSlateWeb.GraphQL.Schema do
 
   import_types __MODULE__.CommonTypes
   import_types __MODULE__.MenuTypes
+  import_types __MODULE__.OrderingTypes
 
   query do
     import_fields :menu_queries
@@ -17,6 +18,7 @@ defmodule PlateSlateWeb.GraphQL.Schema do
 
   mutation do
     import_fields :menu_mutations
+    import_fields :ordering_mutations
   end
 
 end
