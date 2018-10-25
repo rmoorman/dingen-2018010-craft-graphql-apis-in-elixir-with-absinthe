@@ -7,6 +7,17 @@ defmodule PlateSlate.Application do
     children = [
       PlateSlate.Repo,
       PlateSlateWeb.Endpoint,
+
+      # We could use:
+      # {Absinthe.Subscription, [PlateSlateWeb.Endpoint]}
+      #
+      # But we are not on master :D
+      # https://github.com/absinthe-graphql/absinthe/issues/617
+      %{
+        id: Absinthe.Subscription,
+        start: {Absinthe.Subscription, :start_link, [PlateSlateWeb.Endpoint]}
+      }
+
     ]
 
     opts = [strategy: :one_for_one, name: PlateSlate.Supervisor]
