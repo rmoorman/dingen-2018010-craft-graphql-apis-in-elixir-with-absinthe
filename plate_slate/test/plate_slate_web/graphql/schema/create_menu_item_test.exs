@@ -16,12 +16,21 @@ defmodule PlateSlateWeb.GraphQL.Schema.CreateMenuItemTest do
       |> Map.fetch!(:id)
       |> to_string
 
-    {:ok, category_id: category_id}
+    dish_id =
+      from(t in Menu.Item, where: t.name == "Water")
+      |> Repo.one!
+      |> Map.fetch!(:id)
+      |> to_string
+
+    {:ok,
+      category_id: category_id,
+      dish_id: dish_id,
+    }
   end
 
 
   @query """
-  mutation ($menuItem: MenuItemInput!) {
+  mutation ($menuItem: CreateMenuItemInput!) {
     createMenuItem(input: $menuItem) {
       menuItem {
         name
@@ -74,6 +83,57 @@ defmodule PlateSlateWeb.GraphQL.Schema.CreateMenuItemTest do
           "menuItem" => nil,
           "errors" => [
             %{"key" => "name", "message" => "has already been taken"},
+          ],
+        },
+      },
+    }
+  end
+
+
+
+  @query """
+  mutation ($id: ID!, $menuItem: UpdateMenuItemInput!) {
+    updateMenuItem(id: $id, input: $menuItem) {
+      menuItem { name }
+      errors { key message }
+    }
+  }
+  """
+
+  test "updating a menu item succeeds", %{dish_id: dish_id} do
+    new_name = "actually h2o"
+
+    conn = post(build_conn(), @api, query: @query, variables: %{
+      "id" => dish_id,
+      "menuItem" => %{"name" => new_name},
+    })
+
+    assert json_response(conn, 200) == %{
+      "data" => %{
+        "updateMenuItem" => %{
+          "menuItem" => %{
+            "name" => new_name,
+          },
+          "errors" => nil,
+        },
+      },
+    }
+  end
+
+  test "updating a non existant menu item fails" do
+    new_name = "actually h2o"
+
+    conn = post(build_conn(), @api, query: @query, variables: %{
+      "id" => -999,
+      "menuItem" => %{"name" => new_name},
+    })
+
+    assert json_response(conn, 200) == %{
+      "data" => %{
+        "updateMenuItem" => %{
+          "menuItem" => nil,
+          "errors" => [
+            %{"key" => "", "message" => "invalid item"}
           ],
         },
       },

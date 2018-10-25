@@ -29,6 +29,20 @@ defmodule PlateSlateWeb.GraphQL.Resolvers.Menu do
     end
   end
 
+  def update_item(_, %{id: id, input: params}, _) do
+    with(
+      {:get, menu_item} when not is_nil(menu_item) <- {:get, Menu.get_item(id)},
+      {:update, {:ok, menu_item}} <- {:update, Menu.update_item(menu_item, params)}
+    ) do
+      {:ok, %{menu_item: menu_item}}
+    else
+      {:update, {:error, %Ecto.Changeset{} = changeset}} ->
+        {:ok, %{errors: transform_errors(changeset)}}
+      _ ->
+        {:ok, %{errors: [%{key: "", message: ["invalid item"]}]}}
+    end
+  end
+
 
   defp transform_errors(changeset) do
     changeset

@@ -99,7 +99,7 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
 
 
 
-  input_object :menu_item_input do
+  input_object :create_menu_item_input do
     field :name, non_null(:string)
     field :description, :string
     field :price, non_null(:decimal)
@@ -111,10 +111,24 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
     field :errors, list_of(:input_error)
   end
 
+  input_object :update_menu_item_input do
+    field :name, :string
+    field :description, :string
+    field :price, :decimal
+    field :category_id, :id
+  end
+
+
   object :menu_mutations do
     field :create_menu_item, :menu_item_result do
-      arg :input, non_null(:menu_item_input)
+      arg :input, non_null(:create_menu_item_input)
       resolve &Resolvers.Menu.create_item/3
+    end
+
+    field :update_menu_item, :menu_item_result do
+      arg :id, :id
+      arg :input, non_null(:update_menu_item_input)
+      resolve &Resolvers.Menu.update_item/3
     end
   end
 end
