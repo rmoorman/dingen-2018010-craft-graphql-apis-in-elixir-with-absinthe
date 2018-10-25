@@ -66,6 +66,9 @@ defmodule PlateSlateWeb.GraphQL.Schema.CreateMenuItemTest do
           "locations" => [%{"column" => 0, "line" => 2}],
           "message" => "Could not create menu item",
           "path" => ["menuItem"],
+          "details" => %{
+            "name" => ["has already been taken"],
+          },
         },
       ],
     }
