@@ -21,4 +21,8 @@ defmodule PlateSlateWeb.GraphQL.Schema do
     import_fields :ordering_mutations
   end
 
+  subscription do
+    import_fields :ordering_subscriptions
+  end
+
 end

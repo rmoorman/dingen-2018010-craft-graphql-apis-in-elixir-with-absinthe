@@ -18,7 +18,7 @@ defmodule PlateSlateWeb.GraphQL.Schema.OrderingTypes do
     field :quantity, :integer
   end
 
-  ###
+  ### Mutations
 
   input_object :order_item_input do
     field :menu_item_id, non_null(:id)
@@ -39,6 +39,21 @@ defmodule PlateSlateWeb.GraphQL.Schema.OrderingTypes do
     field :place_order, :order_result do
       arg :input, non_null(:place_order_input)
       resolve &Resolvers.Ordering.place_order/3
+    end
+  end
+
+  ### Subscriptions
+
+  object :ordering_subscriptions do
+    field :new_order, :order do
+      config fn _args, _info ->
+        {:ok, topic: "*"}
+      end
+
+      resolve fn root, _, _ ->
+        IO.inspect(root, label: "root of subscription newOrder")
+        {:ok, root}
+      end
     end
   end
 
