@@ -22,10 +22,16 @@ defmodule PlateSlateWeb.GraphQL.Schema.CreateMenuItemTest do
 
   @query """
   mutation ($menuItem: MenuItemInput!) {
-    menuItem: createMenuItem(input: $menuItem) {
-      name
-      description
-      price
+    createMenuItem(input: $menuItem) {
+      menuItem {
+        name
+        description
+        price
+      }
+      errors {
+        key
+        message
+      }
     }
   }
   """
@@ -41,10 +47,13 @@ defmodule PlateSlateWeb.GraphQL.Schema.CreateMenuItemTest do
 
     assert json_response(conn, 200) == %{
       "data" => %{
-        "menuItem" => %{
-          "name" => menu_item["name"],
-          "description" => menu_item["description"],
-          "price" => menu_item["price"],
+        "createMenuItem" => %{
+          "menuItem" => %{
+            "name" => menu_item["name"],
+            "description" => menu_item["description"],
+            "price" => menu_item["price"],
+          },
+          "errors" => nil,
         }
       }
     }
@@ -60,17 +69,14 @@ defmodule PlateSlateWeb.GraphQL.Schema.CreateMenuItemTest do
     conn = post(build_conn(), @api, query: @query, variables: %{"menuItem" => menu_item})
 
     assert json_response(conn, 200) == %{
-      "data" => %{"menuItem" => nil},
-      "errors" => [
-        %{
-          "locations" => [%{"column" => 0, "line" => 2}],
-          "message" => "Could not create menu item",
-          "path" => ["menuItem"],
-          "details" => %{
-            "name" => ["has already been taken"],
-          },
+      "data" => %{
+        "createMenuItem" => %{
+          "menuItem" => nil,
+          "errors" => [
+            %{"key" => "name", "message" => "has already been taken"},
+          ],
         },
-      ],
+      },
     }
   end
 

@@ -106,9 +106,13 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
     field :category_id, non_null(:id)
   end
 
+  object :menu_item_result do
+    field :menu_item, :menu_item
+    field :errors, list_of(:input_error)
+  end
 
   object :menu_mutations do
-    field :create_menu_item, :menu_item do
+    field :create_menu_item, :menu_item_result do
       arg :input, non_null(:menu_item_input)
       resolve &Resolvers.Menu.create_item/3
     end
