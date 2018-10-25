@@ -41,4 +41,18 @@ defmodule PlateSlateWeb.GraphQL.Schema.CommonTypes do
     end
   end
 
+  scalar :decimal do
+    parse fn
+      %{value: value}, _ -> Decimal.parse(value)
+      _, _ -> :error
+    end
+    serialize &to_string/1
+  end
+
+
+  @desc "An error encountered trying to persist input"
+  object :input_error do
+    field :key, non_null(:string)
+    field :message, non_null(:string)
+  end
 end

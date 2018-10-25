@@ -17,10 +17,10 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
     field :tag, :string
 
     @desc "Priced above a value"
-    field :priced_above, :float
+    field :priced_above, :decimal
 
     @desc "Priced below a value"
-    field :priced_below, :float
+    field :priced_below, :decimal
 
     @desc "Added to the menu before this date"
     field :added_before, :date
@@ -42,6 +42,9 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
 
     @desc "A small amount of text trying to describe this tasteful experience"
     field :description, :string
+
+    @desc "The price of the item"
+    field :price, :decimal
 
     @desc "Since when it has been on the menu"
     field :added_on, :date
@@ -91,6 +94,41 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
     field :search, list_of(:search_result) do
       arg :matching, non_null(:string)
       resolve &Resolvers.Menu.search/3
+    end
+  end
+
+
+
+  input_object :create_menu_item_input do
+    field :name, non_null(:string)
+    field :description, :string
+    field :price, non_null(:decimal)
+    field :category_id, non_null(:id)
+  end
+
+  object :menu_item_result do
+    field :menu_item, :menu_item
+    field :errors, list_of(:input_error)
+  end
+
+  input_object :update_menu_item_input do
+    field :name, :string
+    field :description, :string
+    field :price, :decimal
+    field :category_id, :id
+  end
+
+
+  object :menu_mutations do
+    field :create_menu_item, :menu_item_result do
+      arg :input, non_null(:create_menu_item_input)
+      resolve &Resolvers.Menu.create_item/3
+    end
+
+    field :update_menu_item, :menu_item_result do
+      arg :id, :id
+      arg :input, non_null(:update_menu_item_input)
+      resolve &Resolvers.Menu.update_item/3
     end
   end
 end
