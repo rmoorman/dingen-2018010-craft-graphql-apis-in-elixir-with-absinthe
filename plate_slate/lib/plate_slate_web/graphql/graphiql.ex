@@ -8,6 +8,7 @@ defmodule PlateSlateWeb.GraphQL.GraphiQL do
       schema: PlateSlateWeb.GraphQL.Schema,
       interface: :simple, # :simple | :advanced | :playground,
       json_codec: Jason,
+      socket: PlateSlateWeb.UserSocket,
     ]
   end
 
@@ -17,6 +18,7 @@ defmodule PlateSlateWeb.GraphQL.GraphiQL do
       schema: PlateSlateWeb.GraphQL.Schema,
       interface: :advanced, # :simple | :advanced | :playground,
       json_codec: Jason,
+      socket: PlateSlateWeb.UserSocket,
     ]
   end
 
@@ -26,6 +28,7 @@ defmodule PlateSlateWeb.GraphQL.GraphiQL do
       schema: PlateSlateWeb.GraphQL.Schema,
       interface: :playground, # :simple | :advanced | :playground,
       json_codec: Jason,
+      socket: PlateSlateWeb.UserSocket,
     ]
   end
 end

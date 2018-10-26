@@ -43,10 +43,12 @@ defmodule PlateSlate.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:cowboy, "~> 1.0"},
+      {:plug_cowboy, "~> 1.0"},
 
       {:absinthe, "~> 1.4.0"},
-      {:absinthe_plug, "~> 1.4.0"},
-      # {:absinthe_phoenix, "~> 1.4.0"},
+      #{:absinthe_plug, "~> 1.4.0"},
+      {:absinthe_plug, github: "absinthe-graphql/absinthe_plug", override: true},
+      {:absinthe_phoenix, "~> 1.4.0"},
       # {:absinthe_relay, "~> 1.4.0"},
 
       {:mix_test_watch, "~> 0.8", only: :dev, runtime: false},

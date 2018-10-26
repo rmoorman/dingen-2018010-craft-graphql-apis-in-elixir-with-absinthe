@@ -1,5 +1,6 @@
 defmodule PlateSlateWeb.UserSocket do
   use Phoenix.Socket
+  use Absinthe.Phoenix.Socket, schema: PlateSlateWeb.GraphQL.Schema
 
   ## Channels
   # channel "room:*", PlateSlateWeb.RoomChannel
