@@ -1,4 +1,4 @@
-defmodule PlateSlateWeb.GraphQL.Schema.QueryMenuItemsTest do
+defmodule PlateSlateWeb.GraphQL.QueryMenuItemsTest do
 
   use PlateSlateWeb.ConnCase, async: true
 

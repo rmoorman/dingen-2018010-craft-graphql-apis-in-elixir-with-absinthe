@@ -50,10 +50,13 @@ defmodule PlateSlateWeb.GraphQL.Schema.OrderingTypes do
         {:ok, topic: "*"}
       end
 
-      resolve fn root, _, _ ->
-        IO.inspect(root, label: "root of subscription newOrder")
-        {:ok, root}
-      end
+      # The root is given when the subscription is published ...
+      # so no need to resolve it. One could, however, inspect
+      # the pushed root like this though:
+      #resolve fn root, _, _ ->
+      #  IO.inspect(root, label: "root of subscription newOrder")
+      #  {:ok, root}
+      #end
     end
   end
 

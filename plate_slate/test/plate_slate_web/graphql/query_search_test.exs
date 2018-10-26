@@ -1,4 +1,4 @@
-defmodule PlateSlateWeb.GraphQL.Schema.QuerySearchTest do
+defmodule PlateSlateWeb.GraphQL.QuerySearchTest do
 
   use PlateSlateWeb.ConnCase, async: true
 
