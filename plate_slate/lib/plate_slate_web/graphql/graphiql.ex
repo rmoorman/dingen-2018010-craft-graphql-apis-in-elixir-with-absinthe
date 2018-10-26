@@ -9,10 +9,6 @@ defmodule PlateSlateWeb.GraphQL.GraphiQL do
       interface: :simple, # :simple | :advanced | :playground,
       json_codec: Jason,
       socket: PlateSlateWeb.UserSocket,
-      # socket url resolution doesn't seem to work ...
-      # so we hardcode the url here
-      # https://github.com/absinthe-graphql/absinthe_plug/blob/master/lib/absinthe/plug/graphiql.ex#L415
-      socket_url: "ws://localhost:4000/socket"
     ]
   end
 
@@ -23,7 +19,6 @@ defmodule PlateSlateWeb.GraphQL.GraphiQL do
       interface: :advanced, # :simple | :advanced | :playground,
       json_codec: Jason,
       socket: PlateSlateWeb.UserSocket,
-      socket_url: "ws://localhost:4000/socket"
     ]
   end
 
@@ -34,7 +29,6 @@ defmodule PlateSlateWeb.GraphQL.GraphiQL do
       interface: :playground, # :simple | :advanced | :playground,
       json_codec: Jason,
       socket: PlateSlateWeb.UserSocket,
-      socket_url: "ws://localhost:4000/socket"
     ]
   end
 end

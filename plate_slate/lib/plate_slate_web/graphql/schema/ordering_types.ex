@@ -40,6 +40,16 @@ defmodule PlateSlateWeb.GraphQL.Schema.OrderingTypes do
       arg :input, non_null(:place_order_input)
       resolve &Resolvers.Ordering.place_order/3
     end
+
+    field :ready_order, :order_result do
+      arg :id, non_null(:id)
+      resolve &Resolvers.Ordering.ready_order/3
+    end
+
+    field :complete_order, :order_result do
+      arg :id, non_null(:id)
+      resolve &Resolvers.Ordering.complete_order/3
+    end
   end
 
   ### Subscriptions
@@ -57,6 +67,27 @@ defmodule PlateSlateWeb.GraphQL.Schema.OrderingTypes do
       #  IO.inspect(root, label: "root of subscription newOrder")
       #  {:ok, root}
       #end
+    end
+
+    field :update_order, :order do
+      arg :id, non_null(:id)
+
+      config fn args, _info ->
+        {:ok, topic: args.id}
+      end
+
+      trigger [:ready_order, :complete_order], topic: fn
+        %{order: order} -> [order.id]
+        _ -> []
+      end
+
+      # Because the complete_order and ready_order mutations
+      # do not just return the order but also error information
+      # and for this subscription, we only need the order itself
+      # we do a little unwrapping
+      resolve fn %{order: order}, _, _ ->
+        {:ok, order}
+      end
     end
   end
 

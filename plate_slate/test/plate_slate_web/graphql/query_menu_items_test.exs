@@ -150,7 +150,7 @@ defmodule PlateSlateWeb.GraphQL.QueryMenuItemsTest do
     response = get(build_conn(), @api, query: @query, variables: @variables)
 
     assert %{"errors" => [%{"locations" => [
-      %{"column" => 0, "line" => 2}], "message" => message}]} = json_response(response, 400)
+      %{"column" => 0, "line" => 2}], "message" => message}]} = json_response(response, 200)
 
     expected = """
     Argument "filter" has invalid value $filter.
@@ -192,7 +192,7 @@ defmodule PlateSlateWeb.GraphQL.QueryMenuItemsTest do
       "errors" => [
         %{"locations" => [%{"column" => 0, "line" => 2}], "message" => message}
       ]
-    } = json_response(response, 400)
+    } = json_response(response, 200)
 
     assert ^message = """
     Argument "emailList" has invalid value $emailList.
