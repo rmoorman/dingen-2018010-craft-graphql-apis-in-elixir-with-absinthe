@@ -4,6 +4,7 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
 
   alias PlateSlateWeb.GraphQL.Resolvers
 
+
   @desc "Filtering options for the menu item list"
   input_object :menu_item_filter do
     @desc "Matching a name"
@@ -47,6 +48,14 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
 
     @desc "Since when it has been on the menu"
     field :added_on, :date
+
+    field :allergy_info, list_of(:allergy_info)
+  end
+
+
+  object :allergy_info do
+    field :allergen, :string
+    field :severity, :string
   end
 
 

@@ -8,6 +8,13 @@ defmodule PlateSlateWeb.GraphQL.Schema do
 
   alias PlateSlateWeb.GraphQL.Middleware
 
+  ### Apply (common) middleware
+
+  def middleware(middleware, field, %{identifier: :allergy_info} = object) do
+    new_middleware = {Absinthe.Middleware.MapGet, to_string(field.identifier)}
+    Absinthe.Schema.replace_default(middleware, new_middleware, field, object)
+  end
+
   def middleware(middleware, _field, %{identifier: :mutation}) do
     middleware ++ [Middleware.ChangesetErrors]
   end
@@ -15,6 +22,8 @@ defmodule PlateSlateWeb.GraphQL.Schema do
   def middleware(middleware, _field, _object) do
     middleware
   end
+
+  ###
 
   query do
     import_fields :menu_queries
