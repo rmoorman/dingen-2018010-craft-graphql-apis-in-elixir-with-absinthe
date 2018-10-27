@@ -6,6 +6,16 @@ defmodule PlateSlateWeb.GraphQL.Schema do
   import_types __MODULE__.MenuTypes
   import_types __MODULE__.OrderingTypes
 
+  alias PlateSlateWeb.GraphQL.Middleware
+
+  def middleware(middleware, _field, %{identifier: :mutation}) do
+    middleware ++ [Middleware.ChangesetErrors]
+  end
+
+  def middleware(middleware, _field, _object) do
+    middleware
+  end
+
   query do
     import_fields :menu_queries
 

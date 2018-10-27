@@ -4,7 +4,6 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
 
   alias PlateSlateWeb.GraphQL.Resolvers
 
-
   @desc "Filtering options for the menu item list"
   input_object :menu_item_filter do
     @desc "Matching a name"
