@@ -16,3 +16,6 @@ config :plate_slate, PlateSlate.Repo,
   database: "plate_slate_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+# Configure comeonin to use less rounds
+config :comeonin, :pbkdf2_rounds, 1
