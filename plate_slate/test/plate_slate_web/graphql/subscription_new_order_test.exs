@@ -2,6 +2,8 @@ defmodule PlateSlateWeb.GraphQL.Subscription.NewOrderTest do
 
   use PlateSlateWeb.SubscriptionCase
 
+  alias PlateSlate.TestAccountsFactory
+
   @subscription """
   subscription {
     newOrder { customerNumber }
@@ -12,7 +14,23 @@ defmodule PlateSlateWeb.GraphQL.Subscription.NewOrderTest do
     placeOrder(input: $input) { order { id } }
   }
   """
+  @login """
+  mutation ($email: String!, $role: Role!, $password: String!) {
+    login(role: $role, email: $email, password: $password) {
+      token
+    }
+  }
+  """
   test "new orders can be subscribed to", %{socket: socket} do
+    # login
+    user = TestAccountsFactory.create_user("employee")
+    ref = push_doc socket, @login, variables: %{
+      "email" => user.email,
+      "role" => "EMPLOYEE",
+      "password" => "super-secret",
+    }
+    assert_reply ref, :ok, %{data: %{"login" => %{"token" => _}}}, 1_000
+
     # setup a subscription
     ref = push_doc socket, @subscription
     assert_reply ref, :ok, %{subscriptionId: subscription_id}

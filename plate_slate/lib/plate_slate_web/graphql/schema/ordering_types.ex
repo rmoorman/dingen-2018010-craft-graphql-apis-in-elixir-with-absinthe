@@ -3,6 +3,7 @@ defmodule PlateSlateWeb.GraphQL.Schema.OrderingTypes do
   use Absinthe.Schema.Notation
 
   alias PlateSlateWeb.GraphQL.Resolvers
+  alias PlateSlateWeb.GraphQL.Middleware
 
   ###
 
@@ -38,6 +39,7 @@ defmodule PlateSlateWeb.GraphQL.Schema.OrderingTypes do
   object :ordering_mutations do
     field :place_order, :order_result do
       arg :input, non_null(:place_order_input)
+      middleware Middleware.Authorize, :any
       resolve &Resolvers.Ordering.place_order/3
     end
 
