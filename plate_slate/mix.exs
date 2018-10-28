@@ -52,6 +52,9 @@ defmodule PlateSlate.MixProject do
       # {:absinthe_relay, "~> 1.4.0"},
 
       {:mix_test_watch, "~> 0.8", only: :dev, runtime: false},
+
+      {:comeonin_ecto_password, "~> 2.1.0"},
+      {:pbkdf2_elixir, "~> 0.12"},
     ]
   end
 

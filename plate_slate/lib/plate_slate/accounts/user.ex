@@ -6,7 +6,7 @@ defmodule PlateSlate.Accounts.User do
   schema "user" do
     field :email, :string
     field :name, :string
-    field :password, :string
+    field :password, Comeonin.Ecto.Password
     field :role, :string
 
     timestamps()

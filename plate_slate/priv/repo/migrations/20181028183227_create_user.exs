@@ -11,5 +11,6 @@ defmodule PlateSlate.Repo.Migrations.CreateUser do
       timestamps()
     end
 
+    create unique_index(:user, [:email, :role])
   end
 end
