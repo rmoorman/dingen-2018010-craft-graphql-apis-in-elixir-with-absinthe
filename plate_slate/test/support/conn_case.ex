@@ -23,6 +23,11 @@ defmodule PlateSlateWeb.ConnCase do
 
       # The default endpoint for testing
       @endpoint PlateSlateWeb.Endpoint
+
+      defp auth_user(conn, user) do
+        token = PlateSlateWeb.Authentication.sign(%{role: user.role, id: user.id})
+        put_req_header(conn, "authorization", "Bearer #{token}")
+      end
     end
   end
 

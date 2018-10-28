@@ -2,8 +2,10 @@ defmodule PlateSlateWeb.GraphQL.CreateMenuItemTest do
 
   use PlateSlateWeb.ConnCase, async: true
 
-  alias PlateSlate.{Repo, Menu}
   import Ecto.Query
+
+  alias PlateSlate.{Repo, Menu}
+  alias PlateSlate.TestAccountsFactory
 
   @api "/api/graphql"
 
@@ -52,7 +54,12 @@ defmodule PlateSlateWeb.GraphQL.CreateMenuItemTest do
       "price" => "5.75",
       "categoryId" => category_id,
     }
-    conn = post(build_conn(), @api, query: @query, variables: %{"menuItem" => menu_item})
+    user = TestAccountsFactory.create_user("employee")
+
+    conn =
+      build_conn()
+      |> auth_user(user)
+      |> post(@api, query: @query, variables: %{"menuItem" => menu_item})
 
     assert json_response(conn, 200) == %{
       "data" => %{
@@ -75,7 +82,12 @@ defmodule PlateSlateWeb.GraphQL.CreateMenuItemTest do
       "price" => "5.75",
       "categoryId" => category_id,
     }
-    conn = post(build_conn(), @api, query: @query, variables: %{"menuItem" => menu_item})
+    user = TestAccountsFactory.create_user("employee")
+
+    conn =
+      build_conn()
+      |> auth_user(user)
+      |> post(@api, query: @query, variables: %{"menuItem" => menu_item})
 
     assert json_response(conn, 200) == %{
       "data" => %{
