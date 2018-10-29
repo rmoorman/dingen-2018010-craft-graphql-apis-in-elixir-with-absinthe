@@ -111,4 +111,11 @@ defmodule PlateSlate.Ordering do
   def change_order(%Order{} = order) do
     Order.changeset(order, %{})
   end
+
+
+  def orders_for_customer(customer_id) do
+    Order
+    |> where(customer_number: ^customer_id)
+    |> Repo.all()
+  end
 end

@@ -33,7 +33,20 @@ defmodule PlateSlateWeb.GraphQL.Schema.AccountsTypes do
     interface :user
     field :email, :string
     field :name, :string
-    field :orders, list_of(:order)
+    field :orders, list_of(:order) do
+      resolve &Resolvers.Accounts.orders_for_customer/3
+    end
+  end
+
+  ###
+  ### Queries
+  ###
+
+  object :accounts_queries do
+    field :me, :user do
+      middleware Middleware.Authorize, :any
+      resolve &Resolvers.Accounts.me/3
+    end
   end
 
   ###

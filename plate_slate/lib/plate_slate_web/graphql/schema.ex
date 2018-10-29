@@ -30,6 +30,7 @@ defmodule PlateSlateWeb.GraphQL.Schema do
 
   query do
     import_fields :menu_queries
+    import_fields :accounts_queries
 
     @desc "Email filtering"
     field :accept_only_valid_email_list, list_of(:email) do
