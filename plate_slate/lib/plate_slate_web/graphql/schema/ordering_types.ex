@@ -19,7 +19,9 @@ defmodule PlateSlateWeb.GraphQL.Schema.OrderingTypes do
     field :quantity, :integer
   end
 
+  ###
   ### Mutations
+  ###
 
   input_object :order_item_input do
     field :menu_item_id, non_null(:id)
@@ -45,16 +47,20 @@ defmodule PlateSlateWeb.GraphQL.Schema.OrderingTypes do
 
     field :ready_order, :order_result do
       arg :id, non_null(:id)
+      middleware Middleware.Authorize, "employee"
       resolve &Resolvers.Ordering.ready_order/3
     end
 
     field :complete_order, :order_result do
       arg :id, non_null(:id)
+      middleware Middleware.Authorize, "employee"
       resolve &Resolvers.Ordering.complete_order/3
     end
   end
 
+  ###
   ### Subscriptions
+  ###
 
   object :ordering_subscriptions do
     field :new_order, :order do
@@ -68,25 +74,28 @@ defmodule PlateSlateWeb.GraphQL.Schema.OrderingTypes do
             {:error, "unauthorized"}
         end
       end
-
-      # The root is given when the subscription is published ...
-      # so no need to resolve it. One could, however, inspect
-      # the pushed root like this though:
-      #resolve fn root, _, _ ->
-      #  IO.inspect(root, label: "root of subscription newOrder")
-      #  {:ok, root}
-      #end
     end
 
     field :update_order, :order do
       arg :id, non_null(:id)
 
-      config fn args, _info ->
-        {:ok, topic: args.id}
+      config fn args, %{context: context} ->
+        case context[:current_user] do
+          %{role: "employee"} ->
+            {:ok, topic: "order:#{args.id}"}
+          %{role: "customer", id: id} ->
+            {:ok, topic: "of_customer:#{id}:#{args.id}"}
+          _ ->
+            {:error, "unauthorized"}
+        end
       end
 
-      trigger [:ready_order, :complete_order], topic: fn
-        %{order: order} -> [order.id]
+      trigger :ready_order, topic: fn
+        %{order: order} ->
+          [
+            "order:#{order.id}",
+            "of_customer:#{order.customer_number}:#{order.id}",
+          ]
         _ -> []
       end
 

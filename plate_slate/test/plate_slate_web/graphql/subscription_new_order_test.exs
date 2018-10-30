@@ -25,7 +25,6 @@ defmodule PlateSlateWeb.GraphQL.Subscription.NewOrderTest do
   test "new orders can be subscribed to", %{socket: socket} do
     # login
     user = TestAccountsFactory.create_user("employee")
-
     ref = push_doc socket, @login, variables: %{
       "email" => user.email,
       "role" => "EMPLOYEE",

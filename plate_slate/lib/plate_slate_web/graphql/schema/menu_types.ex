@@ -83,6 +83,9 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
     end
   end
 
+  ###
+  ### Queries
+  ###
 
   object :menu_queries do
     @desc "The list of available items on the menu"
@@ -106,7 +109,9 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
     end
   end
 
-
+  ###
+  ### Mutations
+  ###
 
   input_object :create_menu_item_input do
     field :name, non_null(:string)
