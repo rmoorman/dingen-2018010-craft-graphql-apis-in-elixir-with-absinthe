@@ -3,6 +3,7 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
   use Absinthe.Schema.Notation
 
   alias PlateSlateWeb.GraphQL.Resolvers
+  alias PlateSlateWeb.GraphQL.Middleware
 
 
   @desc "Filtering options for the menu item list"
@@ -82,6 +83,9 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
     end
   end
 
+  ###
+  ### Queries
+  ###
 
   object :menu_queries do
     @desc "The list of available items on the menu"
@@ -105,7 +109,9 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
     end
   end
 
-
+  ###
+  ### Mutations
+  ###
 
   input_object :create_menu_item_input do
     field :name, non_null(:string)
@@ -130,6 +136,7 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
   object :menu_mutations do
     field :create_menu_item, :menu_item_result do
       arg :input, non_null(:create_menu_item_input)
+      middleware Middleware.Authorize, "employee"
       resolve &Resolvers.Menu.create_item/3
     end
 

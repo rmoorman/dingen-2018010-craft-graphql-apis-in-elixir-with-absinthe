@@ -16,7 +16,19 @@ defmodule PlateSlateWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket, _connect_info) do
+  def connect(params, socket, _connect_info) do
+    socket = with(
+      "Bearer " <> token <- Map.get(params, "Authorization"),
+      {:ok, data} <- PlateSlateWeb.Authentication.verify(token),
+      %{} = user <- get_user(data)
+    ) do
+      Absinthe.Phoenix.Socket.put_options(socket, context: %{
+        current_user: user
+      })
+    else
+      _ -> socket
+    end
+
     {:ok, socket}
   end
 
@@ -31,4 +43,9 @@ defmodule PlateSlateWeb.UserSocket do
   #
   # Returning `nil` makes this socket anonymous.
   def id(_socket), do: nil
+
+
+  defp get_user(%{id: id, role: role}) do
+    PlateSlate.Accounts.lookup(role, id)
+  end
 end

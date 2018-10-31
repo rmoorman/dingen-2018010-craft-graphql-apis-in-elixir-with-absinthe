@@ -5,6 +5,7 @@ defmodule PlateSlateWeb.GraphQL.Schema do
   import_types __MODULE__.CommonTypes
   import_types __MODULE__.MenuTypes
   import_types __MODULE__.OrderingTypes
+  import_types __MODULE__.AccountsTypes
 
   alias PlateSlateWeb.GraphQL.Middleware
 
@@ -24,9 +25,12 @@ defmodule PlateSlateWeb.GraphQL.Schema do
   end
 
   ###
+  ### Queries
+  ###
 
   query do
     import_fields :menu_queries
+    import_fields :accounts_queries
 
     @desc "Email filtering"
     field :accept_only_valid_email_list, list_of(:email) do
@@ -35,10 +39,19 @@ defmodule PlateSlateWeb.GraphQL.Schema do
     end
   end
 
+  ###
+  ### Mutations
+  ###
+
   mutation do
     import_fields :menu_mutations
     import_fields :ordering_mutations
+    import_fields :accounts_mutations
   end
+
+  ###
+  ### Subscriptions
+  ###
 
   subscription do
     import_fields :ordering_subscriptions

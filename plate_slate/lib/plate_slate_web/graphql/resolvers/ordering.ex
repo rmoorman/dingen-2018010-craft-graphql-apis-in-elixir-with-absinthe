@@ -2,9 +2,19 @@ defmodule PlateSlateWeb.GraphQL.Resolvers.Ordering do
 
   alias PlateSlate.Ordering
 
-  def place_order(_, %{input: place_order_input}, _) do
+  def place_order(_, %{input: place_order_input}, %{context: context}) do
+    place_order_input = case context[:current_user] do
+      %{role: "customer", id: id} ->
+        Map.put(place_order_input, :customer_id, id)
+      _ ->
+        place_order_input
+    end
     with {:ok, order} <- Ordering.create_order(place_order_input) do
-      Absinthe.Subscription.publish(PlateSlateWeb.Endpoint, order, new_order: "*")
+      Absinthe.Subscription.publish(
+        PlateSlateWeb.Endpoint,
+        order,
+        new_order: [order.customer_number, "*"]
+      )
       {:ok, %{order: order}}
     end
   end
@@ -12,6 +22,14 @@ defmodule PlateSlateWeb.GraphQL.Resolvers.Ordering do
   def ready_order(_, %{id: id}, _) do
     order = Ordering.get_order!(id)
     with {:ok, order} <- Ordering.update_order(order, %{state: "ready"}) do
+      Absinthe.Subscription.publish(
+        PlateSlateWeb.Endpoint,
+        %{order: order},
+        update_order: [
+          "order:#{order.id}",
+          "of_customer:#{order.customer_number}:#{order.id}",
+        ]
+      )
       {:ok, %{order: order}}
     end
   end
@@ -19,6 +37,14 @@ defmodule PlateSlateWeb.GraphQL.Resolvers.Ordering do
   def complete_order(_, %{id: id}, _) do
     order = Ordering.get_order!(id)
     with {:ok, order} <- Ordering.update_order(order, %{state: "complete"}) do
+      #Absinthe.Subscription.publish(
+      #  PlateSlateWeb.Endpoint,
+      #  %{order: order},
+      #  update_order: [
+      #    "order:#{order.id}",
+      #    "of_customer:#{order.customer_number}:#{order.id}",
+      #  ]
+      #)
       {:ok, %{order: order}}
     end
   end

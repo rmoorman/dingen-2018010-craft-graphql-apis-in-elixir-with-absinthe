@@ -11,6 +11,7 @@ defmodule PlateSlateWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug PlateSlateWeb.Plug.Context
   end
 
   scope "/", PlateSlateWeb do
