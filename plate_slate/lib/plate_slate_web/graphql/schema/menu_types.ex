@@ -51,6 +51,10 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
     field :added_on, :date
 
     field :allergy_info, list_of(:allergy_info)
+
+    field :category, :category do
+      resolve &Resolvers.Menu.category_for_item/3
+    end
   end
 
 
