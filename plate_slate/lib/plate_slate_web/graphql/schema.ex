@@ -9,6 +9,24 @@ defmodule PlateSlateWeb.GraphQL.Schema do
 
   alias PlateSlateWeb.GraphQL.Middleware
 
+  ### Setup common context values
+
+  def dataloader() do
+    alias PlateSlate.Menu
+    Dataloader.new
+    |> Dataloader.add_source(Menu, Menu.data())
+  end
+
+  def context(ctx) do
+    Map.put(ctx, :loader, dataloader())
+  end
+
+  ### Plugins
+
+  def plugins do
+    [Absinthe.Middleware.Dataloader | Absinthe.Plugin.defaults]
+  end
+
   ### Apply (common) middleware
 
   def middleware(middleware, field, object) do

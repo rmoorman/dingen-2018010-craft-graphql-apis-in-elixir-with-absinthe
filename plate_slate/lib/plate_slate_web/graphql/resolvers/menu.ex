@@ -1,6 +1,6 @@
 defmodule PlateSlateWeb.GraphQL.Resolvers.Menu do
 
-  import Absinthe.Resolution.Helpers, only: [batch: 3]
+  import Absinthe.Resolution.Helpers, only: [on_load: 2]
 
   alias PlateSlate.Menu
   alias PlateSlate.Repo
@@ -18,14 +18,13 @@ defmodule PlateSlateWeb.GraphQL.Resolvers.Menu do
     {:ok, Repo.all(query)}
   end
 
-  def category_for_item(menu_item, _, _) do
-    batch(
-      {Menu, :batch_categories_by_id},
-      menu_item.category_id,
-      fn categories ->
-        {:ok, Map.get(categories, menu_item.category_id)}
-      end
-    )
+  def category_for_item(menu_item, _, %{context: %{loader: loader}}) do
+    loader
+    |> Dataloader.load(Menu, :category, menu_item)
+    |> on_load(fn loader ->
+      category = Dataloader.get(loader, Menu, :category, menu_item)
+      {:ok, category}
+    end)
   end
 
   def search(_, %{matching: term}, _) do
