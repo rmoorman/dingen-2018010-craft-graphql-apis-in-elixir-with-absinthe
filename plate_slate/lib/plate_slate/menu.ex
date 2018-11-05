@@ -32,6 +32,15 @@ defmodule PlateSlate.Menu do
     |> Repo.all()
   end
 
+  def batch_categories_by_id(_opts, ids) do
+    Category
+    |> where([c], c.id in ^Enum.uniq(ids))
+    |> Repo.all()
+    |> Map.new(fn category ->
+      {category.id, category}
+    end)
+  end
+
   @doc """
   Gets a single category.
 
