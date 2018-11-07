@@ -4,6 +4,7 @@
   <thead>
     <tr>
       <th>Menu Item</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -14,9 +15,14 @@
           <%= item.name %>
         </td>
         <td>
-          <%#= link "Show", to: Routes.item_path(@conn, :show, item) %>
-          <%#= link "Edit", to: Routes.item_path(@conn, :edit, item) %>
-          <%#= link "Delete", to: Routes.item_path(@conn, :delete, item), method: :delete, data: [confirm: "Are you sure?"] %>
+          <%= link "Show", to: Routes.item_path(@conn, :show, item), class: "button" %>
+          <%= link "Edit", to: Routes.item_path(@conn, :edit, item), class: "button" %>
+          <%= link "Delete",
+            to: Routes.item_path(@conn, :delete, item),
+            method: :delete,
+            data: [confirm: "Are you sure?"],
+            class: "button button-outline"
+          %>
         </td>
       </tr>
     <% end %>
