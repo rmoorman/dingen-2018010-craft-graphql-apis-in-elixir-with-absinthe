@@ -73,6 +73,8 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
     field :name, :string
     field :description, :string
     field :items, list_of(:menu_item) do
+      arg :filter, :menu_item_filter
+      arg :order, type: :sort_order, default_value: :asc
       resolve &Resolvers.Menu.items_for_category/3
     end
   end
