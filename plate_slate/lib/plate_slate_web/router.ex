@@ -20,11 +20,18 @@ defmodule PlateSlateWeb.Router do
     get "/", PageController, :index
   end
 
-  scope "/api" do
+  scope "/api", PlateSlateWeb.GraphQL do
     pipe_through :api
-    forward "/graphql", PlateSlateWeb.GraphQL.Plug
-    forward "/graphiql", PlateSlateWeb.GraphQL.GraphiQL.Simple
-    forward "/graphiql-advanced", PlateSlateWeb.GraphQL.GraphiQL.Advanced
-    forward "/graphiql-playground", PlateSlateWeb.GraphQL.GraphiQL.Playground
+
+    forward "/graphql", Plug
+    forward "/graphiql", GraphiQL.Simple
+    forward "/graphiql-advanced", GraphiQL.Advanced
+    forward "/graphiql-playground", GraphiQL.Playground
+  end
+
+  scope "/admin", PlateSlateWeb do
+    pipe_through :browser
+
+    resources "/items", ItemController
   end
 end

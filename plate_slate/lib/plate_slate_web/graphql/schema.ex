@@ -2,6 +2,7 @@ defmodule PlateSlateWeb.GraphQL.Schema do
 
   use Absinthe.Schema
 
+  import_types Absinthe.Phoenix.Types
   import_types __MODULE__.CommonTypes
   import_types __MODULE__.MenuTypes
   import_types __MODULE__.OrderingTypes
