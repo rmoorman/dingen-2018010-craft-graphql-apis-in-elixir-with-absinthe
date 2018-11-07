@@ -34,6 +34,7 @@ defmodule PlateSlate.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      # Base deps
       {:phoenix, github: "phoenixframework/phoenix", override: true},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 3.2"},
@@ -45,14 +46,19 @@ defmodule PlateSlate.MixProject do
       {:cowboy, "~> 1.0"},
       {:plug_cowboy, "~> 1.0"},
 
+      # Development/testing aids
+      {:cortex, "~> 0.1", only: [:dev, :test]},
+      {:mix_test_watch, "~> 0.8", only: :dev, runtime: false},
+
+      # GraphQL
       {:absinthe, "~> 1.4.0"},
       {:absinthe_plug, "~> 1.4.0"},
       #{:absinthe_plug, github: "absinthe-graphql/absinthe_plug", override: true},
       {:absinthe_phoenix, "~> 1.4.0"},
       # {:absinthe_relay, "~> 1.4.0"},
+      {:dataloader, "~> 1.0.0"},
 
-      {:mix_test_watch, "~> 0.8", only: :dev, runtime: false},
-
+      # Authentication
       {:comeonin_ecto_password, "~> 2.1.0"},
       {:pbkdf2_elixir, "~> 0.12"},
     ]

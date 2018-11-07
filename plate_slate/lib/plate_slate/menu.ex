@@ -32,6 +32,35 @@ defmodule PlateSlate.Menu do
     |> Repo.all()
   end
 
+  def batch_categories_by_id(_opts, ids) do
+    Category
+    |> where([c], c.id in ^Enum.uniq(ids))
+    |> Repo.all()
+    |> Map.new(fn category ->
+      {category.id, category}
+    end)
+  end
+
+
+
+  ## Dataloader source
+
+  def data() do
+    Dataloader.Ecto.new(Repo, query: &query/2)
+  end
+
+  def query(Item, args) do
+    list_items_query(args)
+  end
+  def query(queryable, _) do
+    queryable
+  end
+
+  ## /Dataloader source
+
+
+
+
   @doc """
   Gets a single category.
 
@@ -122,13 +151,17 @@ defmodule PlateSlate.Menu do
   """
   def list_items(filters), do:
     filters
-    |> Enum.reduce(Item, fn
+    |> list_items_query()
+    |> Repo.all()
+
+  defp list_items_query(args) do
+    Enum.reduce(args, Item, fn
       {:order, order}, query ->
         query |> order_by({^order, :name})
       {:filter, filter}, query ->
         query |> list_items_filter(filter)
     end)
-    |> Repo.all()
+  end
 
   defp list_items_filter(query, filter) do
     Enum.reduce(filter, query, fn

@@ -9,18 +9,47 @@ defmodule PlateSlateWeb.GraphQL.Schema do
 
   alias PlateSlateWeb.GraphQL.Middleware
 
+  ### Setup common context values
+
+  def dataloader() do
+    alias PlateSlate.Menu
+    Dataloader.new
+    |> Dataloader.add_source(Menu, Menu.data())
+  end
+
+  def context(ctx) do
+    Map.put(ctx, :loader, dataloader())
+  end
+
+  ### Plugins
+
+  def plugins do
+    [Absinthe.Middleware.Dataloader | Absinthe.Plugin.defaults]
+  end
+
   ### Apply (common) middleware
 
-  def middleware(middleware, field, %{identifier: :allergy_info} = object) do
-    new_middleware = {Absinthe.Middleware.MapGet, to_string(field.identifier)}
-    Absinthe.Schema.replace_default(middleware, new_middleware, field, object)
+  def middleware(middleware, field, object) do
+    middleware
+    |> apply(:errors, field, object)
+    |> apply(:get_string, field, object)
+    |> apply(:debug, field, object)
   end
 
-  def middleware(middleware, _field, %{identifier: :mutation}) do
+  defp apply(middleware, :errors, _field, %{identifier: :mutation}) do
     middleware ++ [Middleware.ChangesetErrors]
   end
-
-  def middleware(middleware, _field, _object) do
+  defp apply([], :get_string, field, %{identifier: :allergy_info}) do
+    [{Absinthe.Middleware.MapGet, to_string(field.identifier)}]
+  end
+  defp apply(middleware, :debug, _field, _object) do
+    if System.get_env("PLATESLATE_GRAPHQL_DEBUG") do
+      [{Middleware.Debug, :start}] ++ middleware
+    else
+      middleware
+    end
+  end
+  defp apply(middleware, _, _, _) do
     middleware
   end
 
