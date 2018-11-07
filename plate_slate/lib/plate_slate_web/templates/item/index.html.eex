@@ -4,6 +4,7 @@
   <thead>
     <tr>
       <th>Menu Item</th>
+      <th>Category</th>
       <th></th>
     </tr>
   </thead>
@@ -11,9 +12,8 @@
 
     <%= for item <- @items do %>
       <tr>
-        <td>
-          <%= item.name %>
-        </td>
+        <td><%= item.name %></td>
+        <td><%= item.category.name %></td>
         <td>
           <%= link "Show", to: Routes.item_path(@conn, :show, item), class: "button" %>
           <%= link "Edit", to: Routes.item_path(@conn, :edit, item), class: "button" %>
