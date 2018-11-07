@@ -2,8 +2,12 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
 
   use Absinthe.Schema.Notation
 
+  import Absinthe.Resolution.Helpers, only: [dataloader: 2]
+
   alias PlateSlateWeb.GraphQL.Resolvers
   alias PlateSlateWeb.GraphQL.Middleware
+
+  alias PlateSlate.Menu
 
 
   @desc "Filtering options for the menu item list"
@@ -53,7 +57,7 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
     field :allergy_info, list_of(:allergy_info)
 
     field :category, :category do
-      resolve &Resolvers.Menu.category_for_item/3
+      resolve dataloader(Menu, :category)
     end
   end
 
@@ -75,7 +79,7 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
     field :items, list_of(:menu_item) do
       arg :filter, :menu_item_filter
       arg :order, type: :sort_order, default_value: :asc
-      resolve &Resolvers.Menu.items_for_category/3
+      resolve dataloader(Menu, :items)
     end
   end
 
