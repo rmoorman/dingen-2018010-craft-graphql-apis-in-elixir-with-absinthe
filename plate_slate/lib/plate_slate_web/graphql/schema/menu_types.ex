@@ -59,6 +59,28 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
     field :category, :category do
       resolve dataloader(Menu, :category)
     end
+
+    field :order_history, :order_history do
+      arg :since, :date
+      middleware Middleware.Authorize, "employee"
+      resolve &Resolvers.Ordering.order_history/3
+    end
+  end
+
+
+  object :order_history do
+    field :orders, list_of(:order) do
+      resolve &Resolvers.Ordering.orders/3
+    end
+
+    field :quantity, non_null(:integer) do
+      resolve Resolvers.Ordering.stat(:quantity)
+    end
+
+    @desc "Gross Revenue"
+    field :gross, non_null(:float) do
+      resolve Resolvers.Ordering.stat(:gross)
+    end
   end
 
 
@@ -103,6 +125,11 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
       arg :filter, :menu_item_filter
       arg :order, type: :sort_order, default_value: :asc
       resolve &Resolvers.Menu.menu_items/3
+    end
+
+    field :menu_item, :menu_item do
+      arg :id, non_null(:id)
+      resolve &Resolvers.Menu.get_item/3
     end
 
     @desc "The list of available categories"
