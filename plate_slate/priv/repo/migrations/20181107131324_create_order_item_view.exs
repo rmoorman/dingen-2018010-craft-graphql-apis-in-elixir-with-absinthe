@@ -10,7 +10,7 @@ defmodule PlateSlate.Repo.Migrations.CreateOrderItemView do
         i.*, o.id AS order_id
       FROM
         orders AS o,
-        json_b_to_recordset(o.items) AS i(name text, quantity int, price flat, id text)
+        jsonb_to_recordset(o.items) AS i(name text, quantity int, price float, id text)
     """)
   end
 
