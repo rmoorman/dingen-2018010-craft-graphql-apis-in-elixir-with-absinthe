@@ -1,0 +1,17 @@
+<h1>Login</h1>
+
+<%= form_for @conn, Routes.session_path(@conn, :create), fn form -> %>
+
+  <fieldset>
+    <label>
+      Email: <%= text_input form, :email %>
+    </label>
+
+    <label>
+      Password: <%= password_input form, :password %>
+    </label>
+
+    <%= submit "Submit", class: "button button-primary" %>
+  </fieldset>
+
+<% end %>

@@ -1,0 +1,45 @@
+<h1>Show Item: <%= @item.name %></h1>
+
+<ul>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.item_path(@conn, :edit, @item) %></span>
+<span><%= link "Back", to: Routes.item_path(@conn, :index) %></span>
+
+<hr>
+
+<%= form_tag Routes.item_path(@conn, :show, @item), method: :get do %>
+  <div class=form-group>
+    <label for=since>Since</label>
+    <input type=date id=since name=since value="<%= @since %>" />
+  </div>
+  <%= submit "Filter Orders", class: "button button-primary" %>
+<% end %>
+
+<%= if Enum.empty?(@item.order_history.orders) do %>
+  <p>No units have been sold during this time period</p>
+<% else %>
+  <h2>
+    Sold
+    <% @item.order_history.quantity %>
+    (~ $<%= Decimal.round(@item.order_history.gross, 2) %> gross)
+  </h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for order <- @item.order_history.orders do %>
+        <tr>
+          <td><%= order.ordered_at |> DateTime.to_date %></td>
+          <td><%= order.items |> Enum.map(&(&1.quantity)) |> Enum.sum() %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

@@ -2,6 +2,8 @@ defmodule PlateSlateWeb.GraphQL.Resolvers.Menu do
 
   alias PlateSlate.Menu
 
+  import Absinthe.Resolution.Helpers, only: [on_load: 2]
+
   def menu_items(_, args, _) do
     {:ok, Menu.list_items(args)}
   end
@@ -32,6 +34,14 @@ defmodule PlateSlateWeb.GraphQL.Resolvers.Menu do
       {:update, error} ->
         error
     end
+  end
+
+  def get_item(_, %{id: id}, %{context: %{loader: loader}}) do
+    loader
+    |> Dataloader.load(Menu, Menu.Item, id)
+    |> on_load(fn loader ->
+      {:ok, Dataloader.get(loader, Menu, Menu.Item, id)}
+    end)
   end
 
 end
