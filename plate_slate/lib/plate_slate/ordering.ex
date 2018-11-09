@@ -149,7 +149,7 @@ defmodule PlateSlate.Ordering do
   end
 
   defp name_query(since, names) do
-    from i in "order_items_view",
+    from i in "order_item_view",
       join: o in Order, on: o.id == i.order_id,
       where: o.ordered_at >= type(^since, :date),
       where: i.name in ^names

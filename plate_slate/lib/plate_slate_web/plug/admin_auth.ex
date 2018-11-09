@@ -16,8 +16,9 @@ defmodule PlateSlateWeb.Plug.AdminAuth do
     else
       _ ->
         conn
-        |> clear_session
+        |> clear_session()
         |> Phoenix.Controller.redirect(to: "/admin/session/new")
+        |> halt()
     end
   end
 
