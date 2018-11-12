@@ -61,6 +61,9 @@ defmodule PlateSlate.MixProject do
       # Authentication
       {:comeonin_ecto_password, "~> 2.1.0"},
       {:pbkdf2_elixir, "~> 0.12"},
+
+      #
+      {:cors_plug, "~> 1.5"},
     ]
   end
 
