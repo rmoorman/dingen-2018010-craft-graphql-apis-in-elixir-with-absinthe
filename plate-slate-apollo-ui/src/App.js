@@ -1,14 +1,17 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react"
+import "./App.css"
+
+import {graphql} from "react-apollo"
+import gql from "graphql-tag"
 
 class App extends React.Component {
   get menuItems() {
-    return [
-      {id: "stub-1", name: "Stub Menu Item 1"},
-      {id: "stub-2", name: "Stub Menu Item 2"},
-      {id: "stub-3", name: "Stub Menu Item 3"},
-    ]
+    const {data} = this.props
+    if (data && data.menuItems) {
+      return data.menuItems
+    } else {
+      return []
+    }
   }
 
   renderMenuItem(menuItem) {
@@ -26,4 +29,8 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const query = gql`
+  {menuItems { id name }}
+`
+
+export default graphql(query)(App)
