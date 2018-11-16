@@ -190,7 +190,9 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
 
   object :menu_subscriptions do
     field :new_menu_item, :menu_item do
-      {:ok, topic: "*"}
+      config fn _args, _info ->
+        {:ok, topic: "*"}
+      end
     end
   end
 end
