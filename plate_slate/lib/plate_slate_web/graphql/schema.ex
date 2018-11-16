@@ -84,6 +84,7 @@ defmodule PlateSlateWeb.GraphQL.Schema do
   ###
 
   subscription do
+    #import_fields :menu_subscriptions
     import_fields :ordering_subscriptions
   end
 

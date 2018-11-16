@@ -183,4 +183,14 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
       resolve &Resolvers.Menu.update_item/3
     end
   end
+
+  ###
+  ### Subscriptions
+  ###
+
+  object :menu_subscriptions do
+    field :new_menu_item, :menu_item do
+      {:ok, topic: "*"}
+    end
+  end
 end
