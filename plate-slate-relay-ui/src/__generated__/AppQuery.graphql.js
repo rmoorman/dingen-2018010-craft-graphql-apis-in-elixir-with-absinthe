@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash d43cc92e5ace4421baa1e6c5618e505d
+ * @relayHash cb0b14357b0946908c269d43ed86f2ec
  */
 
 /* eslint-disable */
@@ -11,10 +11,14 @@
 import type { ConcreteRequest } from 'relay-runtime';
 export type AppQueryVariables = {||};
 export type AppQueryResponse = {|
-  +menuItems: ?$ReadOnlyArray<?{|
-    +id: ?string,
-    +name: ?string,
-  |}>
+  +menuItems: ?{|
+    +edges: ?$ReadOnlyArray<?{|
+      +node: ?{|
+        +id: string,
+        +name: ?string,
+      |}
+    |}>
+  |}
 |};
 export type AppQuery = {|
   variables: AppQueryVariables,
@@ -25,9 +29,13 @@ export type AppQuery = {|
 
 /*
 query AppQuery {
-  menuItems {
-    id
-    name
+  menuItems(first: 100) {
+    edges {
+      node {
+        id
+        name
+      }
+    }
   }
 }
 */
@@ -38,24 +46,53 @@ var v0 = [
     "kind": "LinkedField",
     "alias": null,
     "name": "menuItems",
-    "storageKey": null,
-    "args": null,
-    "concreteType": "MenuItem",
-    "plural": true,
+    "storageKey": "menuItems(first:100)",
+    "args": [
+      {
+        "kind": "Literal",
+        "name": "first",
+        "value": 100,
+        "type": "Int"
+      }
+    ],
+    "concreteType": "MenuItemConnection",
+    "plural": false,
     "selections": [
       {
-        "kind": "ScalarField",
+        "kind": "LinkedField",
         "alias": null,
-        "name": "id",
+        "name": "edges",
+        "storageKey": null,
         "args": null,
-        "storageKey": null
-      },
-      {
-        "kind": "ScalarField",
-        "alias": null,
-        "name": "name",
-        "args": null,
-        "storageKey": null
+        "concreteType": "MenuItemEdge",
+        "plural": true,
+        "selections": [
+          {
+            "kind": "LinkedField",
+            "alias": null,
+            "name": "node",
+            "storageKey": null,
+            "args": null,
+            "concreteType": "MenuItem",
+            "plural": false,
+            "selections": [
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "name": "id",
+                "args": null,
+                "storageKey": null
+              },
+              {
+                "kind": "ScalarField",
+                "alias": null,
+                "name": "name",
+                "args": null,
+                "storageKey": null
+              }
+            ]
+          }
+        ]
       }
     ]
   }
@@ -65,7 +102,7 @@ return {
   "operationKind": "query",
   "name": "AppQuery",
   "id": null,
-  "text": "query AppQuery {\n  menuItems {\n    id\n    name\n  }\n}\n",
+  "text": "query AppQuery {\n  menuItems(first: 100) {\n    edges {\n      node {\n        id\n        name\n      }\n    }\n  }\n}\n",
   "metadata": {},
   "fragment": {
     "kind": "Fragment",
@@ -84,5 +121,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '69fa81a167d76759f4d7654f5cc418d7';
+(node/*: any*/).hash = '0151a0327e8bc944071bc9939ce6c526';
 module.exports = node;

@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 074ef06e51fe037bc7c39a25d42539b7
+ * @relayHash ae89a69f8b190499e2f644f76b950e98
  */
 
 /* eslint-disable */
@@ -12,7 +12,7 @@ import type { ConcreteRequest } from 'relay-runtime';
 export type NewMenuItemSubscriptionVariables = {||};
 export type NewMenuItemSubscriptionResponse = {|
   +newMenuItem: ?{|
-    +id: ?string,
+    +id: string,
     +name: ?string,
   |}
 |};

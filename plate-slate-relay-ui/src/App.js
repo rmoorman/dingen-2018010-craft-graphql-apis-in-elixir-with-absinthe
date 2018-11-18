@@ -7,7 +7,13 @@ import './App.css';
 import NewMenuItemSubscription from "./subscriptions/NewMenuItemSubscription"
 
 const query = graphql`
-  query AppQuery {menuItems{id name}}
+  query AppQuery {
+    menuItems(first: 100) {
+      edges {
+        node {id name}
+      }
+    }
+  }
 `
 
 class App extends Component {
@@ -30,7 +36,7 @@ class App extends Component {
 
           return (
             <ul>
-              {props.menuItems.map(item =>
+              {props.menuItems.edges.map(({node: item}) =>
                 <li key={item.id}>{item.name}</li>
               )}
             </ul>

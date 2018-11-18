@@ -61,7 +61,7 @@ type InputError {
 }
 
 """A tasty dish for you to enjoy"""
-type MenuItem implements SearchResult {
+type MenuItem implements SearchResult & Node {
   """Since when it has been on the menu"""
   addedOn: Date
   allergyInfo: [AllergyInfo]
@@ -70,8 +70,8 @@ type MenuItem implements SearchResult {
   """A small amount of text trying to describe this tasteful experience"""
   description: String
 
-  """The identifier for this menu item"""
-  id: ID
+  """The ID of an object"""
+  id: ID!
 
   """The name of the menu item"""
   name: String
@@ -79,6 +79,19 @@ type MenuItem implements SearchResult {
 
   """The price of the item"""
   price: Decimal
+}
+
+type MenuItemConnection {
+  edges: [MenuItemEdge]
+  pageInfo: PageInfo!
+}
+
+type MenuItemEdge {
+  """A cursor for use in pagination"""
+  cursor: String!
+
+  """The item at the end of the edge"""
+  node: MenuItem
 }
 
 """Filtering options for the menu item list"""
@@ -110,6 +123,12 @@ type MenuItemResult {
   menuItem: MenuItem
 }
 
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
+  id: ID!
+}
+
 type Order {
   customerNumber: Int
   id: ID
@@ -137,6 +156,20 @@ input OrderItemInput {
 type OrderResult {
   errors: [InputError]
   order: Order
+}
+
+type PageInfo {
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
 }
 
 input PlaceOrderInput {
@@ -172,7 +205,13 @@ type RootQueryType {
   menuItem(id: ID!): MenuItem
 
   """The list of available items on the menu"""
-  menuItems(filter: MenuItemFilter, order: SortOrder = ASC): [MenuItem]
+  menuItems(after: String, before: String, filter: MenuItemFilter, first: Int, last: Int, order: SortOrder = ASC): MenuItemConnection
+
+  """Fetches an object given its ID"""
+  node(
+    """The id of an object."""
+    id: ID!
+  ): Node
   search(matching: String!): [SearchResult]
 }
 
