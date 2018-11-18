@@ -6,10 +6,14 @@ defmodule PlateSlateWeb.ItemController do
 
   @graphql """
   query {
-    menu_items @put {
-      category
-      order_history {
-        quantity
+    menu_items(first: 100) {
+      edges {
+        node @put {
+          category
+          order_history {
+            quantity
+          }
+        }
       }
     }
   }

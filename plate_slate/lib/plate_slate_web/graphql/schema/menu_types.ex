@@ -1,6 +1,7 @@
 defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
 
   use Absinthe.Schema.Notation
+  use Absinthe.Relay.Schema.Notation, :modern
 
   import Absinthe.Resolution.Helpers, only: [dataloader: 2]
 
@@ -36,11 +37,11 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
 
 
   @desc "A tasty dish for you to enjoy"
-  object :menu_item do
+  node object :menu_item do
     interfaces [:search_result]
 
-    @desc "The identifier for this menu item"
-    field :id, :id
+    #@desc "The identifier for this menu item"
+    #field :id, :id
 
     @desc "The name of the menu item"
     field :name, :string
@@ -115,13 +116,16 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
     end
   end
 
+  # Relay connection node definition
+  connection node_type: :menu_item
+
   ###
   ### Queries
   ###
 
   object :menu_queries do
     @desc "The list of available items on the menu"
-    field :menu_items, list_of(:menu_item) do
+    connection field :menu_items, node_type: :menu_item do
       arg :filter, :menu_item_filter
       arg :order, type: :sort_order, default_value: :asc
       resolve &Resolvers.Menu.menu_items/3
@@ -181,6 +185,18 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
       arg :id, :id
       arg :input, non_null(:update_menu_item_input)
       resolve &Resolvers.Menu.update_item/3
+    end
+  end
+
+  ###
+  ### Subscriptions
+  ###
+
+  object :menu_subscriptions do
+    field :new_menu_item, :menu_item do
+      config fn _args, _info ->
+        {:ok, topic: "*"}
+      end
     end
   end
 end

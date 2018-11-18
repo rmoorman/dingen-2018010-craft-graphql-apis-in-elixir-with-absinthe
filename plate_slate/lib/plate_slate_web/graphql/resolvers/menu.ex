@@ -5,7 +5,11 @@ defmodule PlateSlateWeb.GraphQL.Resolvers.Menu do
   import Absinthe.Resolution.Helpers, only: [on_load: 2]
 
   def menu_items(_, args, _) do
-    {:ok, Menu.list_items(args)}
+    Absinthe.Relay.Connection.from_query(
+      Menu.list_items_query(args),
+      &PlateSlate.Repo.all/1,
+      args
+    )
   end
 
   def category_list(_, args, _) do

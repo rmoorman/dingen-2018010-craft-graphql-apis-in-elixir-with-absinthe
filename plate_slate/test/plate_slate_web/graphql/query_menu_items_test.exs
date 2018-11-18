@@ -13,8 +13,10 @@ defmodule PlateSlateWeb.GraphQL.QueryMenuItemsTest do
 
   @query """
   {
-    menuItems(filter: {}) {
-      name
+    menuItems(first: 100, filter: {}) {
+      edges {
+        node { name }
+      }
     }
   }
   """
@@ -24,22 +26,24 @@ defmodule PlateSlateWeb.GraphQL.QueryMenuItemsTest do
 
     assert json_response(conn, 200) == %{
       "data" => %{
-        "menuItems" => [
-          %{"name" => "Bánh mì"},
-          %{"name" => "Chocolate Milkshake"},
-          %{"name" => "Croque Monsieur"},
-          %{"name" => "French Fries"},
-          %{"name" => "Lemonade"},
-          %{"name" => "Masala Chai"},
-          %{"name" => "Muffuletta"},
-          %{"name" => "Papadum"},
-          %{"name" => "Pasta Salad"},
-          %{"name" => "Reuben"},
-          %{"name" => "Soft Drink"},
-          %{"name" => "Vada Pav"},
-          %{"name" => "Vanilla Milkshake"},
-          %{"name" => "Water"},
-        ]
+        "menuItems" => %{
+          "edges" => [
+            %{"node" => %{"name" => "Bánh mì"}},
+            %{"node" => %{"name" => "Chocolate Milkshake"}},
+            %{"node" => %{"name" => "Croque Monsieur"}},
+            %{"node" => %{"name" => "French Fries"}},
+            %{"node" => %{"name" => "Lemonade"}},
+            %{"node" => %{"name" => "Masala Chai"}},
+            %{"node" => %{"name" => "Muffuletta"}},
+            %{"node" => %{"name" => "Papadum"}},
+            %{"node" => %{"name" => "Pasta Salad"}},
+            %{"node" => %{"name" => "Reuben"}},
+            %{"node" => %{"name" => "Soft Drink"}},
+            %{"node" => %{"name" => "Vada Pav"}},
+            %{"node" => %{"name" => "Vanilla Milkshake"}},
+            %{"node" => %{"name" => "Water"}},
+          ]
+        }
       }
     }
   end
@@ -47,23 +51,31 @@ defmodule PlateSlateWeb.GraphQL.QueryMenuItemsTest do
 
   @query """
   {
-    menuItems(filter: {}, order: DESC) {
-      name
+    menuItems(first: 100, filter: {}, order: DESC) {
+      edges {
+        node {
+          name
+        }
+      }
     }
   }
   """
   test "menuItems field returns items descending using literals" do
     response = get(build_conn(), @api, query: @query)
     assert %{
-      "data" => %{"menuItems" => [%{"name" => "Water"} | _]}
+      "data" => %{"menuItems" => %{
+        "edges" => [%{"node" => %{"name" => "Water"}} | _]
+      }}
     } = json_response(response, 200)
   end
 
 
   @query """
   query ($order: SortOrder!) {
-    menuItems(filter: {}, order: $order) {
-      name
+    menuItems(first: 100, filter: {}, order: $order) {
+      edges {
+        node { name }
+      }
     }
   }
   """
@@ -71,15 +83,21 @@ defmodule PlateSlateWeb.GraphQL.QueryMenuItemsTest do
   test "menuItems field returns items descending using variables" do
     response = get(build_conn(), @api, query: @query, variables: @variables)
     assert %{
-      "data" => %{"menuItems" => [%{"name" => "Water"} | _]}
+      "data" => %{
+        "menuItems" => %{
+          "edges" => [%{"node" => %{"name" => "Water"}} | _]
+        }
+      }
     } = json_response(response, 200)
   end
 
 
   @query """
   query ($term: String) {
-    menuItems(filter: {name: $term}) {
-      name
+    menuItems(first: 100, filter: {name: $term}) {
+      edges {
+        node { name }
+      }
     }
   }
   """
@@ -88,9 +106,11 @@ defmodule PlateSlateWeb.GraphQL.QueryMenuItemsTest do
     conn = get(build_conn(), @api, query: @query, variables: @variables)
     assert json_response(conn, 200) == %{
       "data" => %{
-        "menuItems" => [
-          %{"name" => "Reuben"},
-        ]
+        "menuItems" => %{
+          "edges" => [
+            %{"node" => %{"name" => "Reuben"}},
+          ]
+        }
       }
     }
   end
@@ -98,8 +118,10 @@ defmodule PlateSlateWeb.GraphQL.QueryMenuItemsTest do
 
   @query """
   query ($filter: MenuItemFilter!) {
-    menuItems(filter: $filter) {
-      name
+    menuItems(first: 100, filter: $filter) {
+      edges {
+        node { name }
+      }
     }
   }
   """
@@ -107,16 +129,21 @@ defmodule PlateSlateWeb.GraphQL.QueryMenuItemsTest do
   test "menuItems field returns menuItems, filtering with a variable" do
     response = get(build_conn(), @api, query: @query, variables: @variables)
     assert %{
-      "data" => %{"menuItems" => [%{"name" => "Vada Pav"}]}
+      "data" => %{
+        "menuItems" => %{
+          "edges" => [%{"node" => %{"name" => "Vada Pav"}}]
+        }
+      }
     } == json_response(response, 200)
   end
 
 
   @query """
   query ($filter: MenuItemFilter!) {
-    menuItems(filter: $filter) {
-      name
-      addedOn
+    menuItems(first: 100, filter: $filter) {
+      edges {
+        node { name addedOn }
+      }
     }
   }
   """
@@ -132,7 +159,9 @@ defmodule PlateSlateWeb.GraphQL.QueryMenuItemsTest do
     response = get(build_conn(), @api, query: @query, variables: @variables)
     assert %{
       "data" => %{
-        "menuItems" => [%{"name" => "Garlic Fries", "addedOn" => "2017-01-01"}]
+        "menuItems" => %{
+          "edges" => [%{"node" => %{"name" => "Garlic Fries", "addedOn" => "2017-01-01"}}]
+        }
       }
     } == json_response(response, 200)
   end
@@ -140,8 +169,12 @@ defmodule PlateSlateWeb.GraphQL.QueryMenuItemsTest do
 
   @query """
   query ($filter: MenuItemFilter!) {
-    menuItems(filter: $filter) {
-      name
+    menuItems(first: 100, filter: $filter) {
+      edges {
+        node {
+          name
+        }
+      }
     }
   }
   """
