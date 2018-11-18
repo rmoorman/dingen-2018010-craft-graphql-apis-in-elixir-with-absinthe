@@ -55,7 +55,7 @@ defmodule PlateSlate.MixProject do
       {:absinthe_plug, "~> 1.4.0"},
       #{:absinthe_plug, github: "absinthe-graphql/absinthe_plug", override: true},
       {:absinthe_phoenix, "~> 1.4.0"},
-      # {:absinthe_relay, "~> 1.4.0"},
+      {:absinthe_relay, "~> 1.4.0"},
       {:dataloader, "~> 1.0.0"},
 
       # Authentication

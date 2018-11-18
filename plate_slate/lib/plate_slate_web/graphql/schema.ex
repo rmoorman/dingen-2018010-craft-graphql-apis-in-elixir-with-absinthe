@@ -1,6 +1,7 @@
 defmodule PlateSlateWeb.GraphQL.Schema do
 
   use Absinthe.Schema
+  use Absinthe.Relay.Schema, :modern
 
   import_types Absinthe.Phoenix.Types
   import_types __MODULE__.CommonTypes
@@ -55,12 +56,32 @@ defmodule PlateSlateWeb.GraphQL.Schema do
   end
 
   ###
+
+  node interface do
+    resolve_type fn
+      %PlateSlate.Menu.Item{}, _ ->
+        :menu_item
+      _, _ ->
+        nil
+    end
+  end
+
+  ###
   ### Queries
   ###
 
   query do
     import_fields :menu_queries
     import_fields :accounts_queries
+
+    node field do
+      resolve fn
+        %{type: :menu_item, id: local_id}, _ ->
+          {:ok, PlateSlate.Repo.get(PlateSlate.Menu.Item, local_id)}
+        _, _ ->
+          {:error, "Unknown node"}
+      end
+    end
 
     @desc "Email filtering"
     field :accept_only_valid_email_list, list_of(:email) do

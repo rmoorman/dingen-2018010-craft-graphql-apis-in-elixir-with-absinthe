@@ -1,6 +1,7 @@
 defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
 
   use Absinthe.Schema.Notation
+  use Absinthe.Relay.Schema.Notation, :modern
 
   import Absinthe.Resolution.Helpers, only: [dataloader: 2]
 
@@ -36,11 +37,11 @@ defmodule PlateSlateWeb.GraphQL.Schema.MenuTypes do
 
 
   @desc "A tasty dish for you to enjoy"
-  object :menu_item do
+  node object :menu_item do
     interfaces [:search_result]
 
-    @desc "The identifier for this menu item"
-    field :id, :id
+    #@desc "The identifier for this menu item"
+    #field :id, :id
 
     @desc "The name of the menu item"
     field :name, :string
