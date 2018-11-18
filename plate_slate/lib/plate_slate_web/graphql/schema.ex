@@ -57,6 +57,7 @@ defmodule PlateSlateWeb.GraphQL.Schema do
 
   ###
 
+  # Relay node interface for objects
   node interface do
     resolve_type fn
       %PlateSlate.Menu.Item{}, _ ->
@@ -74,6 +75,7 @@ defmodule PlateSlateWeb.GraphQL.Schema do
     import_fields :menu_queries
     import_fields :accounts_queries
 
+    # Relay node field
     node field do
       resolve fn
         %{type: :menu_item, id: local_id}, _ ->
