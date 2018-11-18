@@ -4,11 +4,17 @@ import {QueryRenderer, graphql} from "react-relay"
 import environment from "./relay-environment"
 import './App.css';
 
+import NewMenuItemSubscription from "./subscriptions/NewMenuItemSubscription"
+
 const query = graphql`
   query AppQuery {menuItems{id name}}
 `
 
 class App extends Component {
+  componentDidMount() {
+    NewMenuItemSubscription()
+  }
+
   render() {
     return (
       <QueryRenderer
