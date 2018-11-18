@@ -4,6 +4,25 @@ import "./App.css"
 import {graphql} from "react-apollo"
 import gql from "graphql-tag"
 
+const query = gql`
+  {
+    menuItems(first: 100) {
+      edges {
+        node {id name}
+      }
+    }
+  }
+`
+
+const subscription = gql`
+  subscription {
+    newMenuItem {
+      id name
+    }
+  }
+`
+
+
 class App extends React.Component {
   componentWillMount() {
     this.props.subscribeToNewMenuItems()
@@ -12,7 +31,7 @@ class App extends React.Component {
   get menuItems() {
     const {data} = this.props
     if (data && data.menuItems) {
-      return data.menuItems
+      return data.menuItems.edges.map(({node: item}) => item)
     } else {
       return []
     }
@@ -33,16 +52,6 @@ class App extends React.Component {
   }
 }
 
-const query = gql`
-  {menuItems { id name }}
-`
-
-const subscription = gql`
-  subscription {
-    newMenuItem { id name}
-  }
-`
-
 const AppContainer = graphql(query, {
   props: props => ({
     ...props,
@@ -53,7 +62,19 @@ const AppContainer = graphql(query, {
           return prev
         }
         const {newMenuItem} = subscriptionData.data
-        return {...prev, menuItems: [newMenuItem, ...prev.menuItems]}
+        return {
+          ...prev,
+          menuItems: {
+            ...prev.menuItems,
+            edges: [
+              {
+                node: newMenuItem,
+                __typename: "MenuItemEdge",
+              },
+              ...prev.menuItems.edges
+            ]
+          }
+        }
       }
     }),
   })
